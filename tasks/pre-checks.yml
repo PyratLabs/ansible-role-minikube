@@ -16,6 +16,8 @@
   fail:
     msg: Virtualization is not supported on this CPU.
   when: minikube_check_virtualization_support.rc > 0
+        and (minikube_skip_virtualization_test is not defined
+            or not minikube_skip_virtualization_test)
 
 - name: Fail play if architecture is not amd64
   fail:

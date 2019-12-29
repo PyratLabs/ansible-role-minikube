@@ -3,5 +3,7 @@
   hosts: all
   become: true
   become_user: k8suser
+  vars:
+    minikube_skip_virtualization_test: true
   roles:
     - role: xanmanning.minikube
