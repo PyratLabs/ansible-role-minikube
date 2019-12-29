@@ -1,0 +1,37 @@
+---
+
+- name: Ensure minikube_install_dir exists
+  file:
+    path: "{{ minikube_install_dir }}"
+    state: directory
+
+- name: Ensure minikube_projects_dir exists
+  file:
+    path: "{{ minikube_projects_dir }}"
+    state: directory
+  when: minikube_projects_dir is defined and minikube_projects_dir
+
+- name: Ensure existing minikube package is moved to keep an copy of the old version
+  command: >
+      mv {{ minikube_install_dir }}/minikube
+      {{ minikube_install_dir }}/minikube-{{ minikube_check_existing_version.stdout_lines[0] }}
+  when:
+    minikube_check_existing.stat.islnk is defined
+    and not minikube_check_existing.stat.islnk
+    and minikube_check_existing_version.stdout_lines[0] != minikube_version
+
+- name: Ensure minikube binary is copied to the installation directory
+  copy:
+    src: "/tmp/minikube-{{ minikube_version }}"
+    dest: "{{ minikube_install_dir }}/minikube-{{ minikube_version }}"
+    remote_src: true
+    mode: 0755
+  when: not minikube_check_existing.stat.exists
+        or (minikube_check_existing.stat.exists
+            and minikube_check_existing_version.stdout_lines[0] != minikube_version)
+
+- name: Ensure minikube package is symlinked
+  file:
+    src: "{{ minikube_install_dir }}/minikube-{{ minikube_version }}"
+    dest: "{{ minikube_install_dir }}/minikube"
+    state: link

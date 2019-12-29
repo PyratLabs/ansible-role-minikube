@@ -1,0 +1,7 @@
+---
+
+# Use a specific version of minikube, eg. `1.6.2`. Specify `false` for latest.
+minikube_version: false
+
+# Installation directory for minikube.
+minikube_install_dir: "{{ ansible_user_dir }}/bin"

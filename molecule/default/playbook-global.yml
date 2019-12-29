@@ -1,0 +1,8 @@
+---
+- name: Converge
+  hosts: all
+  become: true
+  vars:
+    minikube_install_dir: /opt/minikube/bin
+  roles:
+    - role: xanmanning.minikube

@@ -1,0 +1,11 @@
+---
+
+- name: Get the binary path for minikube
+  set_fact:
+    minikube_binary_path: "v{{ minikube_version }}/minikube-linux-amd64"
+
+- name: Ensure minikube binary is downloaded
+  get_url:
+    url: "{{ minikube_release_baseurl }}/{{ minikube_binary_path }}"
+    dest: "/tmp/minikube-{{ minikube_version }}"
+    mode: 0600

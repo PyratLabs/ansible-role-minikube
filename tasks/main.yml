@@ -1,0 +1,12 @@
+---
+
+- import_tasks: pre-checks.yml
+
+- import_tasks: get-version.yml
+  when: minikube_version is not defined or not minikube_version
+
+- import_tasks: download-minikube.yml
+
+- import_tasks: install-minikube.yml
+
+- import_tasks: post-checks.yml

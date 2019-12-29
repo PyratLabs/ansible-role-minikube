@@ -1,0 +1,12 @@
+---
+
+- name: Get the version information of the latest release of minikube
+  uri:
+    url: https://api.github.com/repos/kubernetes/minikube/releases/latest
+    return_content: true
+    body_format: json
+  register: minikube_get_latest_version
+
+- name: Ensure the minikube_version variable is set
+  set_fact:
+    minikube_version: "{{ minikube_get_latest_version.json.tag_name | regex_replace('^v', '') }}"

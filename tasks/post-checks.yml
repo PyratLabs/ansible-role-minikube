@@ -1,0 +1,32 @@
+---
+
+- name: Check the state of the new minikube package
+  stat:
+    path: "{{ minikube_install_dir }}/minikube"
+  register: minikube_check_installed
+
+- name: Fail play if minikube is not installed as expected
+  assert:
+    that:
+      - minikube_check_installed.stat.exists
+      - minikube_check_installed.stat.islnk
+    fail_msg: minikube was not installed as expected, it is likely something went wrong.
+    success_msg: minikube has been installed as expected.
+
+- name: Check the minikube binary version matches the expected version
+  shell: >
+    set -o pipefail && \
+      {{ minikube_install_dir }}/minikube version | \
+      awk '{ print $NF }' | sed 's/^v//'
+  args:
+    executable: "{{ minikube_check_bash_path.stdout_lines[0] }}"
+  changed_when: false
+  failed_when: false
+  register: minikube_check_installed_version
+
+- name: Fail play if minikube is not the expected version
+  assert:
+    that:
+      - minikube_check_installed_version.stdout_lines[0] == minikube_version
+    fail_msg: Installed minikube version is not as expected, it is likely something went wrong.
+    success_msg: Installed minikube version is as expected.

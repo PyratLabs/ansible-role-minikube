@@ -1,0 +1,39 @@
+---
+
+- name: Check where bash is installed
+  command: which bash
+  register: minikube_check_bash_path
+  failed_when: false
+  changed_when: false
+
+- name: Check if virtualization is supported
+  command: grep -E 'vmx|svm' /proc/cpuinfo
+  register: minikube_check_virtualization_support
+  failed_when: false
+  changed_when: false
+
+- name: Fail play if virtualization is not supported
+  fail:
+    msg: Virtualization is not supported on this CPU.
+  when: minikube_check_virtualization_support.rc > 0
+
+- name: Fail play if architecture is not amd64
+  fail:
+    msg: This role only supports x86_64 processors.
+  when: ansible_architecture != "x86_64"
+
+- name: Check for existing minikube binary
+  stat:
+    path: "{{ minikube_install_dir }}/minikube"
+  register: minikube_check_existing
+
+- name: Check minikube binary version if binary already exists
+  shell: >
+    set -o pipefail && \
+      {{ minikube_install_dir }}/minikube version | \
+      awk '{ print $NF }' | sed 's/^v//'
+  args:
+    executable: "{{ minikube_check_bash_path.stdout_lines[0] }}"
+  changed_when: false
+  register: minikube_check_existing_version
+  when: minikube_check_existing.stat.exists
