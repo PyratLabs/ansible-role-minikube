@@ -5,12 +5,6 @@
     path: "{{ minikube_install_dir }}"
     state: directory
 
-- name: Ensure minikube_projects_dir exists
-  file:
-    path: "{{ minikube_projects_dir }}"
-    state: directory
-  when: minikube_projects_dir is defined and minikube_projects_dir
-
 - name: Ensure existing minikube package is moved to keep an copy of the old version
   command: >
       mv {{ minikube_install_dir }}/minikube
