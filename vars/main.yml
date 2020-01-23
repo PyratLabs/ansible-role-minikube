@@ -1,3 +1,4 @@
 ---
 
 minikube_release_baseurl: https://storage.googleapis.com/minikube/releases
+minikube_github_api: https://api.github.com/repos/kubernetes/minikube

@@ -2,7 +2,7 @@
 
 - name: Get the version information of the latest release of minikube
   uri:
-    url: https://api.github.com/repos/kubernetes/minikube/releases/latest
+    url: "{{ minikube_github_api }}/releases/latest"
     return_content: true
     body_format: json
   register: minikube_get_latest_version
